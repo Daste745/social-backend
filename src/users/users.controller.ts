@@ -5,13 +5,23 @@ import {
   NotFoundException,
   UseGuards,
   Request,
+  Post,
+  Body,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { User, UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Post()
+  async create(@Body() createUserDto: CreateUserDto) {
+    const user = await this.usersService.create(createUserDto);
+
+    return user;
+  }
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
@@ -27,8 +37,6 @@ export class UsersController {
     if (!user) return new NotFoundException();
     return user;
   }
-
-  // TODO: POST /users
 
   // TODO: PATCH /users
 
