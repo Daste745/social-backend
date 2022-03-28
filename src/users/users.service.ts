@@ -1,45 +1,30 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-
-export type User = {
-  id: number;
-  username: string;
-  password: string;
-};
+import { User } from './user.entity';
 
 @Injectable()
 export class UsersService {
-  // TODO: Use a real database
-  private users: User[] = [
-    { id: 0, username: 'stefan@daste.cloud', password: 'test' },
-    { id: 1, username: 'test@mail.com', password: 'supersecret' },
-  ];
+  constructor(
+    @InjectRepository(User) private usersRepository: Repository<User>,
+  ) {}
 
-  // TODO: Generalize these methods into a repository
-
-  async create(createUserDto: CreateUserDto): Promise<User | undefined> {
-    if (await this.findOneByUsername(createUserDto?.username)) {
-      return undefined;
-    }
-
-    const user: User = {
-      id: this.users.at(-1).id + 1, // TODO: Use UUID -> can always return an user
-      username: createUserDto?.username,
-      password: createUserDto?.password, // TODO: Encrypt the password
-    };
-    this.users.push(user);
-
-    console.log(this.users);
+  create(createUserDto: CreateUserDto): User {
+    const user = this.usersRepository.create({
+      email: createUserDto.email,
+      password: createUserDto.password,
+    });
+    this.usersRepository.save(user);
 
     return user;
   }
 
-  async findOneByUsername(username: string): Promise<User | undefined> {
-    return this.users.find((user) => user.username === username);
+  findOneByEmail(email: string): Promise<User | undefined> {
+    return this.usersRepository.findOne({ where: { email: email } });
   }
 
-  async findOne(id: number): Promise<User | undefined> {
-    const user = this.users.find((user) => user.id === id);
-    return user;
+  findOne(id: number): Promise<User | undefined> {
+    return this.usersRepository.findOne(id);
   }
 }
