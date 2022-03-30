@@ -10,21 +10,20 @@ export class UsersService {
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
-  create(createUserDto: CreateUserDto): User {
+  async create(createUserDto: CreateUserDto): Promise<User> {
     const user = this.usersRepository.create({
       email: createUserDto.email,
       password: createUserDto.password,
     });
-    this.usersRepository.save(user);
-
-    return user;
+    // TODO: Handle non-unique emails
+    return this.usersRepository.save(user);
   }
 
-  findOneByEmail(email: string): Promise<User | undefined> {
-    return this.usersRepository.findOne({ where: { email: email } });
+  async findOneByEmail(email: string): Promise<User> {
+    return this.usersRepository.findOneOrFail({ where: { email: email } });
   }
 
-  findOne(id: number): Promise<User | undefined> {
-    return this.usersRepository.findOne(id);
+  findOne(id: number): Promise<User> {
+    return this.usersRepository.findOneOrFail(id);
   }
 }

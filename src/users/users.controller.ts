@@ -18,25 +18,25 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  async create(@Body() createUserDto: CreateUserDto) {
-    const user = this.usersService.create(createUserDto);
-
-    return user;
+  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return this.usersService.create(createUserDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  getLoggedInUser(@Request() req): any {
+  async getLoggedInUser(@Request() req): Promise<User> {
     return req.user;
   }
 
   @Get(':id')
-  async getUser(@Param() params): Promise<User | {}> {
-    const id = parseInt(params.id);
-
-    const user = await this.usersService.findOne(id);
-    if (!user) return new NotFoundException();
-    return user;
+  async getUser(@Param('id') id: string): Promise<User> {
+    // TODO: Automatically cast `id` to `number`
+    try {
+      return await this.usersService.findOne(parseInt(id));
+    } catch (e) {
+      throw new NotFoundException();
+      // TODO: Use some proper exception handling (handlers/interceptors?)
+    }
   }
 
   // TODO: PATCH /users
