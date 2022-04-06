@@ -30,9 +30,10 @@ export class UsersController {
 
   @Get(':id')
   async getUser(@Param('id') id: string): Promise<User> {
-    // TODO: Automatically cast `id` to `number`
+    // TODO: Validate if `id` is an UUID
+
     try {
-      return await this.usersService.findOne(parseInt(id));
+      return await this.usersService.findOne(id);
     } catch (e) {
       throw new NotFoundException();
       // TODO: Use some proper exception handling (handlers/interceptors?)

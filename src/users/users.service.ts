@@ -23,7 +23,7 @@ export class UsersService {
     return this.usersRepository.findOneOrFail({ where: { email: email } });
   }
 
-  findOne(id: number): Promise<User> {
+  findOne(id: string): Promise<User> {
     return this.usersRepository.findOneOrFail(id);
   }
 }
