@@ -1,10 +1,13 @@
 import { registerAs } from '@nestjs/config';
+import { env } from 'process';
+
+require('dotenv').config();
 
 export default registerAs('jwt', () => {
   return {
-    secret: 'SECRET', // TODO: Use secret from env
+    secret: env.JWT_SECRET,
     signOptions: {
-      expiresIn: '5m', // TODO: Set expiry from env
+      expiresIn: env.JWT_EXPIRY,
     },
   };
 });
