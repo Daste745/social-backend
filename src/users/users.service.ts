@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { argon2id, hash } from 'argon2';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -38,5 +39,18 @@ export class UsersService {
     const user = await this.usersRepository.findOneOrFail(id);
     user.version++;
     await this.usersRepository.save(user);
+  }
+
+  async update(user: User, updateUserDto: UpdateUserDto): Promise<User> {
+    const password = updateUserDto.password;
+    if (password) {
+      updateUserDto.password = await hash(password, {
+        type: argon2id,
+        parallelism: 4,
+      });
+    }
+
+    await this.usersRepository.update(user, updateUserDto);
+    return this.usersRepository.findOne(user.id);
   }
 }

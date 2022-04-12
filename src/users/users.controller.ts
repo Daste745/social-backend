@@ -7,9 +7,11 @@ import {
   Request,
   Post,
   Body,
+  Patch,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
 
@@ -40,7 +42,14 @@ export class UsersController {
     }
   }
 
-  // TODO: PATCH /users
+  @UseGuards(JwtAuthGuard)
+  @Patch('me')
+  async updateUser(
+    @Request() req,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<User> {
+    return this.usersService.update(req.user, updateUserDto);
+  }
 
   // TODO: DELETE /users
 }
