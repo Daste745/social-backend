@@ -29,8 +29,15 @@ export class AuthService {
   }
 
   async generateToken(user: User): Promise<AuthToken> {
-    const payload = { sub: user.id };
+    // TODO: Find a way to save the version without using a custom field
+    const payload = { sub: user.id, ver: user.version };
 
     return new AuthToken(this.jwtService.sign(payload));
+  }
+
+  async logout(user: User): Promise<{ message: string }> {
+    await this.usersService.bumpVersion(user.id);
+
+    return { message: 'Logged out' };
   }
 }

@@ -33,4 +33,10 @@ export class UsersService {
   async findOne(id: string): Promise<User> {
     return this.usersRepository.findOneOrFail(id);
   }
+
+  async bumpVersion(id: string): Promise<void> {
+    const user = await this.usersRepository.findOneOrFail(id);
+    user.version++;
+    await this.usersRepository.save(user);
+  }
 }

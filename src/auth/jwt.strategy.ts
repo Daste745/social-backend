@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { env } from 'process';
@@ -19,9 +19,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   // NOTE: This method associates a User object from the database with the access token
   // TODO: Type `payload`
-  async validate(payload: any): Promise<User> {
+  async validate(payload: any): Promise<User | null> {
     // FIXME: User could be null if it was deleted after issuing a token
     //        This should be fixed by implementing logout logic
-    return await this.usersService.findOne(payload.sub);
+    const user = await this.usersService.findOne(payload.sub);
+
+    if (user.version !== payload.ver) {
+      return null;
+    }
+
+    return user;
   }
 }
