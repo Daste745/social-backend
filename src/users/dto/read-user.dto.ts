@@ -1,7 +1,7 @@
 import { Exclude, Expose } from 'class-transformer';
 
 @Exclude()
-export class ShowUserDto {
+export class ReadUserDto {
   @Expose()
   id: string;
 
