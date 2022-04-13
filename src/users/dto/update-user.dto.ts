@@ -1,4 +1,9 @@
+import { IsEmail, IsString } from 'class-validator';
+
 export class UpdateUserDto {
-  email: string | undefined;
-  password: string | undefined;
+  @IsEmail()
+  email?: string;
+
+  @IsString()
+  password?: string;
 }
