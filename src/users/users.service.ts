@@ -35,9 +35,7 @@ export class UsersService {
   }
 
   async bumpVersion(id: string): Promise<void> {
-    const user = await this.usersRepository.findOneOrFail(id);
-    user.version++;
-    await this.usersRepository.save(user);
+    await this.usersRepository.increment({ id: id }, 'version', 1);
   }
 
   async update(user: User, updateUserDto: UpdateUserDto): Promise<User> {
