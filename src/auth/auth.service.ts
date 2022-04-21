@@ -19,13 +19,11 @@ export class AuthService {
 
       if (!(await verify(user.password, password))) {
         throw new UnauthorizedException();
-        // TODO: Use some proper exception handling (handlers/interceptors?)
       }
 
       return user;
     } catch (e) {
       throw new UnauthorizedException();
-      // TODO: Use some proper exception handling (handlers/interceptors?)
     }
   }
 

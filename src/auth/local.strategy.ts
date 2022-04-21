@@ -17,7 +17,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       return await this.authService.validateUser(username, password);
     } catch (e) {
       throw new UnauthorizedException();
-      // TODO: Use some proper exception handling (handlers/interceptors?)
     }
   }
 }
