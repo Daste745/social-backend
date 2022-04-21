@@ -4,6 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { env } from 'process';
 import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
+import { JWTPayload } from './jwtPayload.entity';
 
 require('dotenv').config();
 
@@ -18,8 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   // NOTE: This method associates a User object from the database with the access token
-  // TODO: Type `payload`
-  async validate(payload: any): Promise<User | null> {
+  async validate(payload: JWTPayload): Promise<User | null> {
     let user: User;
 
     try {

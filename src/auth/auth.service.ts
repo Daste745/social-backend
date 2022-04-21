@@ -4,6 +4,7 @@ import { verify } from 'argon2';
 import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { AuthToken } from './authToken.entity';
+import { JWTPayload } from './jwtPayload.entity';
 
 @Injectable()
 export class AuthService {
@@ -30,7 +31,7 @@ export class AuthService {
 
   async generateToken(user: User): Promise<AuthToken> {
     // TODO: Find a way to save the version without using a custom field
-    const payload = { sub: user.id, ver: user.version };
+    const payload: JWTPayload = { sub: user.id, ver: user.version };
 
     return new AuthToken(this.jwtService.sign(payload));
   }
