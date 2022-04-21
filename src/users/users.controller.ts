@@ -8,6 +8,7 @@ import {
   Post,
   Body,
   Patch,
+  ConflictException,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -22,8 +23,14 @@ export class UsersController {
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<ReadUserDto> {
-    const user = await this.usersService.create(createUserDto);
-    return plainToInstance(ReadUserDto, user);
+    try {
+      const user = await this.usersService.create(createUserDto);
+      return plainToInstance(ReadUserDto, user);
+    } catch (e) {
+      throw new ConflictException(
+        'A user with this email address already exists.',
+      );
+    }
   }
 
   @UseGuards(JwtAuthGuard)
@@ -34,14 +41,11 @@ export class UsersController {
 
   @Get(':id')
   async getUser(@Param('id') id: string): Promise<ReadUserDto> {
-    // TODO: Validate if `id` is an UUID
-
     try {
       const user = await this.usersService.findOne(id);
       return plainToInstance(ReadUserDto, user);
     } catch (e) {
       throw new NotFoundException();
-      // TODO: Use some proper exception handling (handlers/interceptors?)
     }
   }
 
@@ -51,8 +55,14 @@ export class UsersController {
     @Request() req,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<ReadUserDto> {
-    const user = await this.usersService.update(req.user, updateUserDto);
-    return plainToInstance(ReadUserDto, user);
+    try {
+      const user = await this.usersService.update(req.user, updateUserDto);
+      return plainToInstance(ReadUserDto, user);
+    } catch (e) {
+      throw new ConflictException(
+        'A user with this email address already exists.',
+      );
+    }
   }
 
   // TODO: DELETE /users

@@ -23,7 +23,6 @@ export class UsersService {
       password: passwordHash,
     });
 
-    // TODO: Handle non-unique emails
     return this.usersRepository.save(user);
   }
 
