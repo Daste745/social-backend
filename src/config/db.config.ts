@@ -10,7 +10,7 @@ export default registerAs('database', () => {
   const srcDir = join(__dirname, '..');
 
   return {
-    // logging: true, // TODO: Set this if debugging
+    logging: parseInt(env.DEBUG) === 1,
     type: 'postgres',
     host: env.POSTGRES_HOST || 'localhost',
     port: parseInt(env.POSTGRES_PORT) || 5432,
