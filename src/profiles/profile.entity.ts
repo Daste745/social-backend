@@ -9,7 +9,7 @@ export class Profile {
   @ManyToOne(() => User, (user) => user.profiles)
   user: User;
 
-  @Column()
+  @Column({ unique: true })
   name: string;
 
   @Column({ nullable: true })
