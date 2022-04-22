@@ -18,12 +18,10 @@ export class UsersService {
       parallelism: 4,
     });
 
-    const user = this.usersRepository.create({
+    return this.usersRepository.save({
       email: createUserDto.email,
       password: passwordHash,
     });
-
-    return this.usersRepository.save(user);
   }
 
   async findOneByEmail(email: string): Promise<User> {
