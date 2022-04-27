@@ -1,8 +1,11 @@
-import { Exclude, Expose } from 'class-transformer';
-import { User } from 'src/users/user.entity';
+import { Exclude, Expose, Type } from 'class-transformer';
+import { ReadUserDto } from 'src/users/dto/read-user.dto';
 
 @Exclude()
 export class ReadProfileDto {
+  @Expose()
+  id: string;
+
   @Expose()
   name: string;
 
