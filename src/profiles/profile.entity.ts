@@ -6,7 +6,7 @@ export class Profile {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => User, (user) => user.profiles)
+  @ManyToOne(() => User, (user) => user.profiles, { eager: true })
   user: User;
 
   @Column({ unique: true })
