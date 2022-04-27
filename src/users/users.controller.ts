@@ -8,7 +8,7 @@ import {
   Post,
   Body,
   Patch,
-  ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -27,7 +27,7 @@ export class UsersController {
       const user = await this.usersService.create(createUserDto);
       return plainToInstance(ReadUserDto, user);
     } catch (e) {
-      throw new ConflictException(
+      throw new BadRequestException(
         'A user with this email address already exists.',
       );
     }
@@ -59,7 +59,7 @@ export class UsersController {
       const user = await this.usersService.update(req.user, updateUserDto);
       return plainToInstance(ReadUserDto, user);
     } catch (e) {
-      throw new ConflictException(
+      throw new BadRequestException(
         'A user with this email address already exists.',
       );
     }
