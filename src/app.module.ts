@@ -6,6 +6,7 @@ import { Connection } from 'typeorm';
 import dbConfiguration from './config/db.config';
 import jwtConfiguration from './config/jwt.config';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ProfilesModule } from './profiles/profiles.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
     UsersModule,
     AuthModule,
+    ProfilesModule,
   ],
 })
 export class AppModule {
