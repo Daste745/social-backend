@@ -10,5 +10,6 @@ export class ReadProfileDto {
   bio?: string;
 
   @Expose()
-  user: User;
+  @Type(() => ReadUserDto)
+  user: ReadUserDto;
 }
