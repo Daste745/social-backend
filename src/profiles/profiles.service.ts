@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
@@ -24,7 +28,35 @@ export class ProfilesService {
   }
 
   async findOne(id: string): Promise<Profile> {
-    return this.profilesRepository.findOneOrFail(id);
+    return this.profilesRepository.findOneOrFail(id, {
+      relations: ['following'],
+    });
+  }
+
+  async follow(profileId: string, targetProfileId: string): Promise<Profile> {
+    let profile: Profile, targetProfile: Profile;
+    try {
+      profile = await this.findOne(profileId);
+      targetProfile = await this.findOne(targetProfileId);
+    } catch (e) {
+      throw new NotFoundException('Profile not found.');
+    }
+
+    if (profile === targetProfile) {
+      throw new BadRequestException("You can't follow yourself.");
+    }
+
+    if (profile.following.some((p) => p.id === targetProfileId)) {
+      profile.following = profile.following.filter(
+        (p) => p.id !== targetProfileId,
+      );
+    } else {
+      profile.following.push(targetProfile);
+    }
+
+    this.profilesRepository.save(profile);
+
+    return profile;
   }
 
   async update(

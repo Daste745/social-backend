@@ -51,6 +51,18 @@ export class ProfilesController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Post(':id/follow/:target_id')
+  async followProfile(
+    @Request() req,
+    @Param('id') id: string,
+    @Param('target_id') targetId: string,
+  ): Promise<ReadProfileDto> {
+    const profile = await this.profilesService.follow(id, targetId);
+
+    return plainToInstance(ReadProfileDto, profile);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(
     @Request() req,
