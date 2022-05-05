@@ -1,5 +1,12 @@
 import { User } from '../users/user.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({ name: 'profile' })
 export class Profile {
@@ -14,4 +21,8 @@ export class Profile {
 
   @Column({ nullable: true })
   bio?: string;
+
+  @ManyToMany(() => Profile)
+  @JoinTable()
+  following?: Profile[];
 }
