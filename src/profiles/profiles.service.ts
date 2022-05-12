@@ -96,7 +96,17 @@ export class ProfilesService {
       throw new UnauthorizedException('You can only modify your profiles.');
     }
 
+    if (
+      updateProfileDto.name &&
+      (await this.existsByName(updateProfileDto.name))
+    ) {
+      throw new BadRequestException(
+        'This username is already in use by another user.',
+      );
+    }
+
     await this.profilesRepository.update(profile.id, updateProfileDto);
+
     return this.profilesRepository.findOne(profile.id);
   }
 }

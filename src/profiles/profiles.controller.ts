@@ -71,17 +71,12 @@ export class ProfilesController {
   ) {
     const profile = await this.profilesService.findOne(id);
 
-    try {
-      const updatedProfile = await this.profilesService.update(
-        req.user,
-        profile,
-        updateProfileDto,
-      );
-      return plainToInstance(ReadProfileDto, updatedProfile);
-    } catch (_) {
-      throw new BadRequestException(
-        'This username is already in use by another user.',
-      );
-    }
+    const updatedProfile = await this.profilesService.update(
+      req.user,
+      profile,
+      updateProfileDto,
+    );
+
+    return plainToInstance(ReadProfileDto, updatedProfile);
   }
 }
