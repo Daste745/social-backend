@@ -46,6 +46,13 @@ export class ProfilesService {
     return count != 0;
   }
 
+  async existsByName(name: string): Promise<boolean> {
+    const count = await this.profilesRepository.count({
+      where: { name: name },
+    });
+    return count != 0;
+  }
+
   async follow(
     user: User,
     profileId: string,
