@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
@@ -38,7 +39,11 @@ export class ProfilesService {
     return count != 0;
   }
 
-  async follow(profileId: string, targetProfileId: string): Promise<Profile> {
+  async follow(
+    user: User,
+    profileId: string,
+    targetProfileId: string,
+  ): Promise<Profile> {
     let profile: Profile, targetProfile: Profile;
     try {
       [profile, targetProfile] = await Promise.all([
@@ -47,6 +52,10 @@ export class ProfilesService {
       ]);
     } catch (e) {
       throw new NotFoundException('Profile not found.');
+    }
+
+    if (!profile.belongsTo(user.id)) {
+      throw new UnauthorizedException('You can only modify your profiles.');
     }
 
     if (profile.id === targetProfile.id) {
@@ -65,9 +74,14 @@ export class ProfilesService {
   }
 
   async update(
+    user: User,
     profile: Profile,
     updateProfileDto: UpdateProfileDto,
   ): Promise<Profile> {
+    if (!profile.belongsTo(user.id)) {
+      throw new UnauthorizedException('You can only modify your profiles.');
+    }
+
     await this.profilesRepository.update(profile, updateProfileDto);
     return this.profilesRepository.findOne(profile.id);
   }

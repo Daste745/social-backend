@@ -57,7 +57,7 @@ export class ProfilesController {
     @Param('id') id: string,
     @Param('target_id') targetId: string,
   ): Promise<ReadProfileDto> {
-    const profile = await this.profilesService.follow(id, targetId);
+    const profile = await this.profilesService.follow(req.user, id, targetId);
 
     return plainToInstance(ReadProfileDto, profile);
   }
@@ -73,6 +73,7 @@ export class ProfilesController {
 
     try {
       const updatedProfile = await this.profilesService.update(
+        req.user,
         profile,
         updateProfileDto,
       );

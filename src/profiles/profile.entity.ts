@@ -25,4 +25,8 @@ export class Profile {
   @ManyToMany(() => Profile)
   @JoinTable()
   following?: Profile[];
+
+  public belongsTo(userId: string): boolean {
+    return this.user.id === userId;
+  }
 }
