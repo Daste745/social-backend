@@ -36,8 +36,10 @@ export class ProfilesService {
   async follow(profileId: string, targetProfileId: string): Promise<Profile> {
     let profile: Profile, targetProfile: Profile;
     try {
-      profile = await this.findOne(profileId);
-      targetProfile = await this.findOne(targetProfileId);
+      [profile, targetProfile] = await Promise.all([
+        this.findOne(profileId),
+        this.findOne(targetProfileId),
+      ]);
     } catch (e) {
       throw new NotFoundException('Profile not found.');
     }
