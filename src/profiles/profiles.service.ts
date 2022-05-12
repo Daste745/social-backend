@@ -82,7 +82,7 @@ export class ProfilesService {
       throw new UnauthorizedException('You can only modify your profiles.');
     }
 
-    await this.profilesRepository.update(profile, updateProfileDto);
+    await this.profilesRepository.update(profile.id, updateProfileDto);
     return this.profilesRepository.findOne(profile.id);
   }
 }

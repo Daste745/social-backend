@@ -45,7 +45,7 @@ export class UsersService {
       });
     }
 
-    await this.usersRepository.update(user, updateUserDto);
+    await this.usersRepository.update(user.id, updateUserDto);
     return this.usersRepository.findOne(user.id);
   }
 }
