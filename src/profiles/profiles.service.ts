@@ -28,6 +28,13 @@ export class ProfilesService {
     });
   }
 
+  async findOneByName(name: string): Promise<Profile> {
+    return this.profilesRepository.findOneOrFail({
+      where: { name: name },
+      relations: ['following'],
+    });
+  }
+
   async findOne(id: string): Promise<Profile> {
     return this.profilesRepository.findOneOrFail(id, {
       relations: ['following'],
