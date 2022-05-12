@@ -44,7 +44,7 @@ export class ProfilesService {
       throw new NotFoundException('Profile not found.');
     }
 
-    if (profile === targetProfile) {
+    if (profile.id === targetProfile.id) {
       throw new BadRequestException("You can't follow yourself.");
     }
 
