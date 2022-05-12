@@ -33,6 +33,11 @@ export class ProfilesService {
     });
   }
 
+  async exists(id: string): Promise<boolean> {
+    const count = await this.profilesRepository.count({ where: { id: id } });
+    return count != 0;
+  }
+
   async follow(profileId: string, targetProfileId: string): Promise<Profile> {
     let profile: Profile, targetProfile: Profile;
     try {
