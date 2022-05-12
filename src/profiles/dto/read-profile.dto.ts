@@ -15,8 +15,4 @@ export class ReadProfileDto {
   @Expose()
   @Type(() => ReadUserDto)
   user: ReadUserDto;
-
-  @Expose()
-  @Type(() => ReadProfileDto)
-  following: ReadProfileDto[];
 }

@@ -62,6 +62,14 @@ export class ProfilesController {
     return plainToInstance(ReadProfileDto, profile);
   }
 
+  @Get(':id/following')
+  async findFollowing(@Param('id') id: string): Promise<ReadProfileDto[]> {
+    const profile = await this.profilesService.findOne(id);
+    return plainToInstance(ReadProfileDto, profile.following);
+  }
+
+  // TODO: @Get(':id/followers')
+
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(
