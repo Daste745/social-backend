@@ -74,7 +74,7 @@ export class ProfilesController {
     const updatedProfile = await this.profilesService.update(
       req.user,
       profile,
-      updateProfileDto,
+      plainToInstance(UpdateProfileDto, updateProfileDto),
     );
 
     return plainToInstance(ReadProfileDto, updatedProfile);

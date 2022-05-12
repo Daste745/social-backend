@@ -105,8 +105,9 @@ export class ProfilesService {
       );
     }
 
-    await this.profilesRepository.update(profile.id, updateProfileDto);
+    if (updateProfileDto.name) profile.name = updateProfileDto.name;
+    if (updateProfileDto.bio) profile.bio = updateProfileDto.bio;
 
-    return this.profilesRepository.findOne(profile.id);
+    return this.profilesRepository.save(profile);
   }
 }
