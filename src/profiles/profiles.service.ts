@@ -56,9 +56,7 @@ export class ProfilesService {
       profile.following.push(targetProfile);
     }
 
-    this.profilesRepository.save(profile);
-
-    return profile;
+    return this.profilesRepository.save(profile);
   }
 
   async update(
