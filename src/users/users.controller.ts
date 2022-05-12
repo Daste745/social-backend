@@ -56,7 +56,10 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<ReadUserDto> {
     try {
-      const user = await this.usersService.update(req.user, updateUserDto);
+      const user = await this.usersService.update(
+        req.user,
+        plainToInstance(UpdateUserDto, updateUserDto),
+      );
       return plainToInstance(ReadUserDto, user);
     } catch (e) {
       throw new BadRequestException(
