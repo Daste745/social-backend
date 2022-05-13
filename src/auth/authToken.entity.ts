@@ -1,3 +1,10 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 export class AuthToken {
-  constructor(private token: string) {}
+  constructor(token: string) {
+    this.token = token;
+  }
+
+  @ApiProperty()
+  token: string;
 }

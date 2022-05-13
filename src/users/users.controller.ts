@@ -10,7 +10,7 @@ import {
   Patch,
   BadRequestException,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
@@ -23,7 +23,10 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  // TODO: Annotate possible returned error codes
+
   @Post()
+  @ApiCreatedResponse({ type: ReadUserDto })
   async create(@Body() createUserDto: CreateUserDto): Promise<ReadUserDto> {
     try {
       const user = await this.usersService.create(createUserDto);
@@ -37,11 +40,13 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
+  @ApiOkResponse({ type: ReadUserDto })
   async getLoggedInUser(@Request() req): Promise<ReadUserDto> {
     return plainToInstance(ReadUserDto, req.user);
   }
 
   @Get(':id')
+  @ApiOkResponse({ type: ReadUserDto })
   async getUser(@Param('id') id: string): Promise<ReadUserDto> {
     try {
       const user = await this.usersService.findOne(id);
@@ -53,6 +58,7 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Patch('me')
+  @ApiOkResponse({ type: ReadUserDto })
   async updateUser(
     @Request() req,
     @Body() updateUserDto: UpdateUserDto,

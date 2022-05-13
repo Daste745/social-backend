@@ -16,15 +16,23 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { plainToInstance } from 'class-transformer';
 import { ReadProfileDto } from './dto/read-profile.dto';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags('profiles')
 @Controller('profiles')
 export class ProfilesController {
   constructor(private readonly profilesService: ProfilesService) {}
 
+  // TODO: Annotate possible returned error codes
+
   @UseGuards(JwtAuthGuard)
   @Post()
+  @ApiCreatedResponse({ type: ReadProfileDto })
   async create(
     @Request() req,
     @Body() createProfileDto: CreateProfileDto,
@@ -43,6 +51,7 @@ export class ProfilesController {
   }
 
   @Get(':id')
+  @ApiOkResponse({ type: ReadProfileDto })
   async findOne(@Param('id') id: string): Promise<ReadProfileDto> {
     try {
       const profile = await this.profilesService.findOne(id);
@@ -54,6 +63,7 @@ export class ProfilesController {
 
   @UseGuards(JwtAuthGuard)
   @Post(':id/follow')
+  @ApiCreatedResponse({ type: ReadProfileDto })
   async followProfile(
     @Request() req,
     @Param('id') id: string,
@@ -65,6 +75,7 @@ export class ProfilesController {
   }
 
   @Get(':id/following')
+  @ApiOkResponse({ type: ReadProfileDto, isArray: true })
   async findFollowing(@Param('id') id: string): Promise<ReadProfileDto[]> {
     const profile = await this.profilesService.findOne(id);
     return plainToInstance(ReadProfileDto, profile.following);
@@ -74,11 +85,12 @@ export class ProfilesController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
+  @ApiOkResponse({ type: ReadProfileDto })
   async update(
     @Request() req,
     @Param('id') id: string,
     @Body() updateProfileDto: UpdateProfileDto,
-  ) {
+  ): Promise<ReadProfileDto> {
     const profile = await this.profilesService.findOne(id);
 
     const updatedProfile = await this.profilesService.update(
