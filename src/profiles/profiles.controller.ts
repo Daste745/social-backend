@@ -16,7 +16,9 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { plainToInstance } from 'class-transformer';
 import { ReadProfileDto } from './dto/read-profile.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('profiles')
 @Controller('profiles')
 export class ProfilesController {
   constructor(private readonly profilesService: ProfilesService) {}
