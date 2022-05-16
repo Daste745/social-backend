@@ -7,7 +7,6 @@ import {
   Param,
   Request,
   UseGuards,
-  NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
 import { ProfilesService } from './profiles.service';
@@ -17,10 +16,12 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { plainToInstance } from 'class-transformer';
 import { ReadProfileDto } from './dto/read-profile.dto';
 import {
+  ApiBadRequestResponse,
   ApiCreatedResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
-  ApiResponse,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
 @ApiTags('profiles')
@@ -28,11 +29,12 @@ import {
 export class ProfilesController {
   constructor(private readonly profilesService: ProfilesService) {}
 
-  // TODO: Annotate possible returned error codes
-
   @UseGuards(JwtAuthGuard)
   @Post()
   @ApiCreatedResponse({ type: ReadProfileDto })
+  @ApiBadRequestResponse({
+    description: 'User used an already taken profile name.',
+  })
   async create(
     @Request() req,
     @Body() createProfileDto: CreateProfileDto,
@@ -52,6 +54,7 @@ export class ProfilesController {
 
   @Get(':id')
   @ApiOkResponse({ type: ReadProfileDto })
+  @ApiNotFoundResponse()
   async findOne(@Param('id') id: string): Promise<ReadProfileDto> {
     const profile = await this.profilesService.findOne(id);
     return plainToInstance(ReadProfileDto, profile);
@@ -60,6 +63,11 @@ export class ProfilesController {
   @UseGuards(JwtAuthGuard)
   @Post(':id/follow')
   @ApiCreatedResponse({ type: ReadProfileDto })
+  @ApiNotFoundResponse()
+  @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse({
+    description: 'User tried to follow their own profile.',
+  })
   async followProfile(
     @Request() req,
     @Param('id') id: string,
@@ -71,6 +79,7 @@ export class ProfilesController {
 
   @Get(':id/following')
   @ApiOkResponse({ type: ReadProfileDto, isArray: true })
+  @ApiNotFoundResponse()
   async findFollowing(@Param('id') id: string): Promise<ReadProfileDto[]> {
     const profile = await this.profilesService.findOne(id);
     return plainToInstance(ReadProfileDto, profile.following);
@@ -81,6 +90,11 @@ export class ProfilesController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @ApiOkResponse({ type: ReadProfileDto })
+  @ApiNotFoundResponse()
+  @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse({
+    description: 'User used an already taken profile name.',
+  })
   async update(
     @Request() req,
     @Param('id') id: string,
