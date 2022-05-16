@@ -53,12 +53,8 @@ export class ProfilesController {
   @Get(':id')
   @ApiOkResponse({ type: ReadProfileDto })
   async findOne(@Param('id') id: string): Promise<ReadProfileDto> {
-    try {
-      const profile = await this.profilesService.findOne(id);
-      return plainToInstance(ReadProfileDto, profile);
-    } catch (_) {
-      throw new NotFoundException();
-    }
+    const profile = await this.profilesService.findOne(id);
+    return plainToInstance(ReadProfileDto, profile);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -70,7 +66,6 @@ export class ProfilesController {
     @Body('target_id') targetId: string,
   ): Promise<ReadProfileDto> {
     const profile = await this.profilesService.follow(req.user, id, targetId);
-
     return plainToInstance(ReadProfileDto, profile);
   }
 
