@@ -37,7 +37,7 @@ export class ProfilesService {
     try {
       return await this.profilesRepository.findOneOrFail({
         where: { name: name },
-        relations: ['following'],
+        relations: ['followers', 'following'],
       });
     } catch (e) {
       if (e instanceof EntityNotFoundError) {
