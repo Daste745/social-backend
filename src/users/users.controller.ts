@@ -2,15 +2,20 @@ import {
   Controller,
   Param,
   Get,
-  NotFoundException,
   UseGuards,
   Request,
   Post,
   Body,
   Patch,
-  BadRequestException,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
@@ -27,54 +32,42 @@ export class UsersController {
 
   @Post()
   @ApiCreatedResponse({ type: ReadUserDto })
+  @ApiBadRequestResponse({
+    description: 'User used an already taken email address.',
+  })
   async create(@Body() createUserDto: CreateUserDto): Promise<ReadUserDto> {
-    try {
-      const user = await this.usersService.create(createUserDto);
-      return plainToInstance(ReadUserDto, user);
-    } catch (e) {
-      throw new BadRequestException(
-        'A user with this email address already exists.',
-      );
-    }
+    const user = await this.usersService.create(createUserDto);
+    return plainToInstance(ReadUserDto, user);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
   @ApiOkResponse({ type: ReadUserDto })
+  @ApiUnauthorizedResponse()
   async getLoggedInUser(@Request() req): Promise<ReadUserDto> {
     return plainToInstance(ReadUserDto, req.user);
   }
 
   @Get(':id')
   @ApiOkResponse({ type: ReadUserDto })
+  @ApiNotFoundResponse()
   async getUser(@Param('id') id: string): Promise<ReadUserDto> {
-    try {
-      const user = await this.usersService.findOne(id);
-      return plainToInstance(ReadUserDto, user);
-    } catch (e) {
-      throw new NotFoundException();
-    }
+    const user = await this.usersService.findOne(id);
+    return plainToInstance(ReadUserDto, user);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch('me')
   @ApiOkResponse({ type: ReadUserDto })
+  @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse({
+    description: 'User used an already taken email address.',
+  })
   async updateUser(
     @Request() req,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<ReadUserDto> {
-    try {
-      const user = await this.usersService.update(
-        req.user,
-        plainToInstance(UpdateUserDto, updateUserDto),
-      );
-      return plainToInstance(ReadUserDto, user);
-    } catch (e) {
-      throw new BadRequestException(
-        'A user with this email address already exists.',
-      );
-    }
+    const user = await this.usersService.update(req.user.id, updateUserDto);
+    return plainToInstance(ReadUserDto, user);
   }
-
-  // TODO: DELETE /users
 }
