@@ -2,9 +2,9 @@ import {
   Controller,
   Post,
   UseGuards,
-  Request,
   HttpCode,
   HttpStatus,
+  Req,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -12,6 +12,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { AuthRequest } from './auth-request.entity';
 import { AuthService } from './auth.service';
 import { AuthToken } from './authToken.entity';
 import { JwtAuthGuard } from './jwt-auth.guard';
@@ -26,7 +27,7 @@ export class AuthController {
   @Post('login')
   @ApiCreatedResponse({ type: AuthToken })
   @ApiUnauthorizedResponse()
-  async login(@Request() req): Promise<AuthToken> {
+  async login(@Req() req: AuthRequest): Promise<AuthToken> {
     return this.authService.generateToken(req.user);
   }
 
@@ -35,7 +36,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse()
   @ApiUnauthorizedResponse()
-  async logout(@Request() req): Promise<{ message: string }> {
+  async logout(@Req() req: AuthRequest): Promise<{ message: string }> {
     return this.authService.logout(req.user);
   }
 }

@@ -3,7 +3,7 @@ import {
   Param,
   Get,
   UseGuards,
-  Request,
+  Req,
   Post,
   Body,
   Patch,
@@ -17,6 +17,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
+import { AuthRequest } from 'src/auth/auth-request.entity';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { ReadUserDto } from './dto/read-user.dto';
@@ -27,8 +28,6 @@ import { UsersService } from './users.service';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  // TODO: Annotate possible returned error codes
 
   @Post()
   @ApiCreatedResponse({ type: ReadUserDto })
@@ -44,7 +43,7 @@ export class UsersController {
   @Get('me')
   @ApiOkResponse({ type: ReadUserDto })
   @ApiUnauthorizedResponse()
-  async getLoggedInUser(@Request() req): Promise<ReadUserDto> {
+  async getLoggedInUser(@Req() req: AuthRequest): Promise<ReadUserDto> {
     return plainToInstance(ReadUserDto, req.user);
   }
 
@@ -64,7 +63,7 @@ export class UsersController {
     description: 'User used an already taken email address.',
   })
   async updateUser(
-    @Request() req,
+    @Req() req: AuthRequest,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<ReadUserDto> {
     const user = await this.usersService.update(req.user.id, updateUserDto);

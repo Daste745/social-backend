@@ -5,7 +5,7 @@ import {
   Body,
   Patch,
   Param,
-  Request,
+  Req,
   UseGuards,
   HttpCode,
   HttpStatus,
@@ -24,6 +24,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { AuthRequest } from 'src/auth/auth-request.entity';
 
 @ApiTags('profiles')
 @Controller('profiles')
@@ -38,7 +39,7 @@ export class ProfilesController {
     description: 'User used an already taken profile name.',
   })
   async create(
-    @Request() req,
+    @Req() req: AuthRequest,
     @Body() createProfileDto: CreateProfileDto,
   ): Promise<ReadProfileDto> {
     const profile = await this.profilesService.create(
@@ -66,7 +67,7 @@ export class ProfilesController {
     description: 'User tried to follow their own profile.',
   })
   async followProfile(
-    @Request() req,
+    @Req() req: AuthRequest,
     @Param('id') id: string,
     @Body('target_id') targetId: string,
   ): Promise<void> {
@@ -98,7 +99,7 @@ export class ProfilesController {
     description: 'User used an already taken profile name.',
   })
   async update(
-    @Request() req,
+    @Req() req: AuthRequest,
     @Param('id') id: string,
     @Body() updateProfileDto: UpdateProfileDto,
   ): Promise<ReadProfileDto> {
