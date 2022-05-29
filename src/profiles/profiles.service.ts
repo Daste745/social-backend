@@ -26,6 +26,12 @@ export class ProfilesService {
     createProfileDto: CreateProfileDto,
     user: User,
   ): Promise<Profile> {
+    if (await this.existsByName(createProfileDto.name)) {
+      throw new BadRequestException(
+        'This username is already in use by another user.',
+      );
+    }
+
     return this.profilesRepository.save({
       user: user,
       name: createProfileDto.name,

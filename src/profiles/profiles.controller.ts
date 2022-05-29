@@ -41,17 +41,11 @@ export class ProfilesController {
     @Request() req,
     @Body() createProfileDto: CreateProfileDto,
   ): Promise<ReadProfileDto> {
-    try {
-      const profile = await this.profilesService.create(
-        createProfileDto,
-        req.user,
-      );
-      return plainToInstance(ReadProfileDto, profile);
-    } catch (_) {
-      throw new BadRequestException(
-        'This username is already in use by another user.',
-      );
-    }
+    const profile = await this.profilesService.create(
+      createProfileDto,
+      req.user,
+    );
+    return plainToInstance(ReadProfileDto, profile);
   }
 
   @Get(':id')
