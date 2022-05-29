@@ -16,7 +16,7 @@ export class Profile {
   @ManyToOne(() => User, (user) => user.profiles, { eager: true })
   user: User;
 
-  @Column({ unique: true })
+  @Column({ unique: true, length: 24 })
   name: string;
 
   @Column({ nullable: true })
