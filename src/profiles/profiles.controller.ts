@@ -7,7 +7,6 @@ import {
   Param,
   Request,
   UseGuards,
-  BadRequestException,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -102,12 +101,10 @@ export class ProfilesController {
     @Param('id') id: string,
     @Body() updateProfileDto: UpdateProfileDto,
   ): Promise<ReadProfileDto> {
-    const profile = await this.profilesService.findOne(id);
-
     const updatedProfile = await this.profilesService.update(
       req.user,
-      profile,
-      plainToInstance(UpdateProfileDto, updateProfileDto),
+      id,
+      updateProfileDto,
     );
 
     return plainToInstance(ReadProfileDto, updatedProfile);

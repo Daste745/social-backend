@@ -124,9 +124,11 @@ export class ProfilesService {
 
   async update(
     user: User,
-    profile: Profile,
+    profileId: string,
     updateProfileDto: UpdateProfileDto,
   ): Promise<Profile> {
+    const profile = await this.findOne(profileId);
+
     if (!profile.belongsTo(user.id)) {
       throw new UnauthorizedException('You can only modify your profiles.');
     }
