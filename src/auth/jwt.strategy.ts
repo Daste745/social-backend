@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { env } from 'process';
@@ -20,18 +20,18 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   // NOTE: This method associates a User object from the database with the access token
   async validate(payload: JWTPayload): Promise<User | null> {
-    let user: User;
-
     try {
-      user = await this.usersService.findOne(payload.sub);
-    } catch (_) {
-      return null;
-    }
+      const user = await this.usersService.findOne(payload.sub);
 
-    if (user.version !== payload.ver) {
-      return null;
-    }
+      if (user.version !== payload.ver) {
+        return null;
+      }
 
-    return user;
+      return user;
+    } catch (e) {
+      if (e instanceof NotFoundException) {
+        return null;
+      }
+    }
   }
 }

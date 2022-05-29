@@ -13,10 +13,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   // NOTE: LocalStrategy requires the parameters to be named `username` and `password`
   //       `username` is actually `email` in this project's logic
   async validate(username: string, password: string): Promise<User> {
-    try {
-      return await this.authService.validateUser(username, password);
-    } catch (e) {
-      throw new UnauthorizedException();
-    }
+    return this.authService.validateUser(username, password);
   }
 }

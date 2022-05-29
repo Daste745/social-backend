@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { verify } from 'argon2';
 import { User } from 'src/users/user.entity';
@@ -23,12 +27,14 @@ export class AuthService {
 
       return user;
     } catch (e) {
-      throw new UnauthorizedException();
+      if (e instanceof NotFoundException) {
+        throw new UnauthorizedException();
+      }
+      throw e;
     }
   }
 
   async generateToken(user: User): Promise<AuthToken> {
-    // TODO: Find a way to save the version without using a custom field
     const payload: JWTPayload = { sub: user.id, ver: user.version };
 
     return new AuthToken(this.jwtService.sign(payload));
