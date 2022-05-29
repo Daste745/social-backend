@@ -2,11 +2,12 @@ import { User } from '../users/user.entity';
 import {
   Column,
   Entity,
-  JoinTable,
-  ManyToMany,
+  JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Relation } from './relation.entity';
 
 @Entity({ name: 'profile' })
 export class Profile {
@@ -22,9 +23,13 @@ export class Profile {
   @Column({ nullable: true })
   bio?: string;
 
-  @ManyToMany(() => Profile)
-  @JoinTable()
-  following?: Profile[];
+  @OneToMany(() => Relation, (relation) => relation.profile_1)
+  @JoinColumn()
+  following?: Relation[];
+
+  @OneToMany(() => Relation, (relation) => relation.profile_2)
+  @JoinColumn()
+  followers?: Relation[];
 
   public belongsTo(userId: string): boolean {
     return this.user.id === userId;

@@ -10,11 +10,16 @@ import { EntityNotFoundError, Repository } from 'typeorm';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { Profile } from './profile.entity';
+import { Relation } from './relation.entity';
 
 @Injectable()
 export class ProfilesService {
   constructor(
-    @InjectRepository(Profile) private profilesRepository: Repository<Profile>,
+    @InjectRepository(Profile)
+    private profilesRepository: Repository<Profile>,
+
+    @InjectRepository(Relation)
+    private relationsRepository: Repository<Relation>,
   ) {}
 
   async create(
@@ -45,7 +50,7 @@ export class ProfilesService {
   async findOne(id: string): Promise<Profile> {
     try {
       return await this.profilesRepository.findOneOrFail(id, {
-        relations: ['following'],
+        relations: ['following', 'followers'],
       });
     } catch (e) {
       if (e instanceof EntityNotFoundError) {
@@ -86,15 +91,19 @@ export class ProfilesService {
       throw new BadRequestException("You can't follow yourself.");
     }
 
-    if (profile.following.some((p) => p.id === targetProfileId)) {
-      profile.following = profile.following.filter(
-        (p) => p.id !== targetProfileId,
-      );
+    const relation = profile.following.find(
+      (p) => p.profile_2.id === targetProfileId,
+    );
+    if (relation) {
+      await this.relationsRepository.delete(relation);
     } else {
-      profile.following.push(targetProfile);
+      await this.relationsRepository.save({
+        profile_1: profile,
+        profile_2: targetProfile,
+      });
     }
 
-    return this.profilesRepository.save(profile);
+    return profile;
   }
 
   async update(
