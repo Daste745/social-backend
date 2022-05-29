@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsNumber, IsOptional } from 'class-validator';
+import { IsInt, IsOptional, IsPositive } from 'class-validator';
 
 const DEFAULT_PER_PAGE = 100;
 
@@ -22,7 +22,8 @@ export class PaginateOptions {
     default: 0,
   })
   @IsOptional()
-  @IsNumber()
+  @IsInt()
+  @IsPositive()
   @Type(() => Number)
   page?: string;
 
@@ -33,7 +34,8 @@ export class PaginateOptions {
     default: DEFAULT_PER_PAGE,
   })
   @IsOptional()
-  @IsNumber()
+  @IsInt()
+  @IsPositive()
   @Type(() => Number)
   perPage?: string;
 }
