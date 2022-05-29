@@ -83,24 +83,16 @@ export class ProfilesController {
   @ApiOkResponse({ type: ReadProfileDto, isArray: true })
   @ApiNotFoundResponse()
   async findFollowing(@Param('id') id: string): Promise<ReadProfileDto[]> {
-    const profile = await this.profilesService.findOne(id);
-    const profiles = [];
-    for (const relation of profile.following) {
-      profiles.push(relation.profile_2);
-    }
-    return plainToInstance(ReadProfileDto, profiles);
+    const following = await this.profilesService.findFollowing(id);
+    return plainToInstance(ReadProfileDto, following);
   }
 
   @Get(':id/followers')
   @ApiOkResponse({ type: ReadProfileDto, isArray: true })
   @ApiNotFoundResponse()
   async findFollowers(@Param('id') id: string): Promise<ReadProfileDto[]> {
-    const profile = await this.profilesService.findOne(id);
-    const profiles = [];
-    for (const relation of profile.followers) {
-      profiles.push(relation.profile_1);
-    }
-    return plainToInstance(ReadProfileDto, profiles);
+    const followers = await this.profilesService.findFollowers(id);
+    return plainToInstance(ReadProfileDto, followers);
   }
 
   @UseGuards(JwtAuthGuard)

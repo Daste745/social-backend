@@ -106,6 +106,16 @@ export class ProfilesService {
     return profile;
   }
 
+  async findFollowing(id: string): Promise<Profile[]> {
+    const profile = await this.findOne(id);
+    return profile.following.map((p) => p.profile_2);
+  }
+
+  async findFollowers(id: string): Promise<Profile[]> {
+    const profile = await this.findOne(id);
+    return profile.followers.map((p) => p.profile_1);
+  }
+
   async update(
     user: User,
     profile: Profile,
