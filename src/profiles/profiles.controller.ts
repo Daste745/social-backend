@@ -9,6 +9,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { ProfilesService } from './profiles.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
@@ -25,6 +26,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { AuthRequest } from 'src/auth/auth-request.entity';
+import { paginate, Paginated, PaginateOptions } from 'src/utils/pagination';
 
 @ApiTags('profiles')
 @Controller('profiles')
@@ -57,11 +59,15 @@ export class ProfilesController {
     return plainToInstance(ReadProfileDto, profile);
   }
 
+  // FIXME: Response types for paginated return types are wrong. Should be Paginated<ReadProfileDto>
+
   @Get('')
   @ApiOkResponse({ type: ReadProfileDto, isArray: true })
-  async findAll(): Promise<ReadProfileDto[]> {
+  async findAll(
+    @Query() paginateOptions: PaginateOptions,
+  ): Promise<Paginated<ReadProfileDto>> {
     const profiles = await this.profilesService.findAll();
-    return plainToInstance(ReadProfileDto, profiles);
+    return paginate(plainToInstance(ReadProfileDto, profiles), paginateOptions);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -84,17 +90,29 @@ export class ProfilesController {
   @Get(':id/following')
   @ApiOkResponse({ type: ReadProfileDto, isArray: true })
   @ApiNotFoundResponse()
-  async findFollowing(@Param('id') id: string): Promise<ReadProfileDto[]> {
+  async findFollowing(
+    @Query() paginateOptions: PaginateOptions,
+    @Param('id') id: string,
+  ): Promise<Paginated<ReadProfileDto>> {
     const following = await this.profilesService.findFollowing(id);
-    return plainToInstance(ReadProfileDto, following);
+    return paginate(
+      plainToInstance(ReadProfileDto, following),
+      paginateOptions,
+    );
   }
 
   @Get(':id/followers')
   @ApiOkResponse({ type: ReadProfileDto, isArray: true })
   @ApiNotFoundResponse()
-  async findFollowers(@Param('id') id: string): Promise<ReadProfileDto[]> {
+  async findFollowers(
+    @Query() paginateOptions: PaginateOptions,
+    @Param('id') id: string,
+  ): Promise<Paginated<ReadProfileDto>> {
     const followers = await this.profilesService.findFollowers(id);
-    return plainToInstance(ReadProfileDto, followers);
+    return paginate(
+      plainToInstance(ReadProfileDto, followers),
+      paginateOptions,
+    );
   }
 
   @UseGuards(JwtAuthGuard)
