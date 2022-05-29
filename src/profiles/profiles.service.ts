@@ -66,6 +66,10 @@ export class ProfilesService {
     }
   }
 
+  async findAll(): Promise<Profile[]> {
+    return this.profilesRepository.find();
+  }
+
   async exists(id: string): Promise<boolean> {
     const count = await this.profilesRepository.count({ where: { id: id } });
     return count != 0;

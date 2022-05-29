@@ -57,6 +57,13 @@ export class ProfilesController {
     return plainToInstance(ReadProfileDto, profile);
   }
 
+  @Get('')
+  @ApiOkResponse({ type: ReadProfileDto, isArray: true })
+  async findAll(): Promise<ReadProfileDto[]> {
+    const profiles = await this.profilesService.findAll();
+    return plainToInstance(ReadProfileDto, profiles);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Post(':id/follow')
   @HttpCode(HttpStatus.NO_CONTENT)
