@@ -33,6 +33,7 @@ export class ProfilesController {
   @UseGuards(JwtAuthGuard)
   @Post()
   @ApiCreatedResponse({ type: ReadProfileDto })
+  @ApiUnauthorizedResponse()
   @ApiBadRequestResponse({
     description: 'User used an already taken profile name.',
   })
