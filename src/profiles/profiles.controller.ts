@@ -8,6 +8,8 @@ import {
   Request,
   UseGuards,
   BadRequestException,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { ProfilesService } from './profiles.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
@@ -62,6 +64,7 @@ export class ProfilesController {
 
   @UseGuards(JwtAuthGuard)
   @Post(':id/follow')
+  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiCreatedResponse({ type: ReadProfileDto })
   @ApiNotFoundResponse()
   @ApiUnauthorizedResponse()
@@ -72,9 +75,8 @@ export class ProfilesController {
     @Request() req,
     @Param('id') id: string,
     @Body('target_id') targetId: string,
-  ): Promise<ReadProfileDto> {
-    const profile = await this.profilesService.follow(req.user, id, targetId);
-    return plainToInstance(ReadProfileDto, profile);
+  ): Promise<void> {
+    await this.profilesService.follow(req.user, id, targetId);
   }
 
   @Get(':id/following')
