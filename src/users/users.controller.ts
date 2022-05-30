@@ -17,11 +17,9 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
-import { AuthRequest } from 'src/auth/auth-request.entity';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { ReadUserDto } from './dto/read-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { AuthRequest } from 'src/auth/types';
+import { JwtAuthGuard } from 'src/auth/guards';
+import { CreateUserDto, ReadUserDto, UpdateUserDto } from 'src/users/dto';
 import { UsersService } from './users.service';
 
 @ApiTags('users')

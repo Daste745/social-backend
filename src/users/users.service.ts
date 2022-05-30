@@ -5,10 +5,9 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundError, Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
-import { User } from './user.entity';
+import { CreateUserDto, UpdateUserDto } from './dto';
+import { User } from './entities';
 import { argon2id, hash } from 'argon2';
-import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {

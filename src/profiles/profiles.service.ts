@@ -5,12 +5,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/users/user.entity';
+import { User } from 'src/users/entities';
 import { EntityNotFoundError, Repository } from 'typeorm';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { Profile } from './profile.entity';
-import { Relation } from './relation.entity';
+import { Profile, Relation } from './entities';
 
 @Injectable()
 export class ProfilesService {

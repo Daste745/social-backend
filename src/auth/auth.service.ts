@@ -5,10 +5,9 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { verify } from 'argon2';
-import { User } from 'src/users/user.entity';
+import { User } from 'src/users/entities';
 import { UsersService } from 'src/users/users.service';
-import { AuthToken } from './authToken.entity';
-import { JWTPayload } from './jwtPayload.entity';
+import { AuthToken, JWTPayload } from './interfaces';
 
 @Injectable()
 export class AuthService {

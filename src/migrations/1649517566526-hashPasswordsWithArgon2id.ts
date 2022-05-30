@@ -1,5 +1,5 @@
 import { argon2id, hash } from 'argon2';
-import { User } from '../users/user.entity';
+import { User } from 'src/users/entities';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class hashPasswordsWithArgon2id1649517566526

@@ -2,9 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { env } from 'process';
-import { User } from 'src/users/user.entity';
+import { User } from 'src/users/entities';
 import { UsersService } from 'src/users/users.service';
-import { JWTPayload } from './jwtPayload.entity';
+import { JWTPayload } from '../interfaces';
 
 require('dotenv').config();
 

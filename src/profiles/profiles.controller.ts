@@ -12,11 +12,8 @@ import {
   Query,
 } from '@nestjs/common';
 import { ProfilesService } from './profiles.service';
-import { CreateProfileDto } from './dto/create-profile.dto';
-import { UpdateProfileDto } from './dto/update-profile.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards';
 import { plainToInstance } from 'class-transformer';
-import { ReadProfileDto } from './dto/read-profile.dto';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -25,8 +22,9 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { AuthRequest } from 'src/auth/auth-request.entity';
+import { AuthRequest } from 'src/auth/types';
 import { paginate, Paginated, PaginateOptions } from 'src/utils/pagination';
+import { CreateProfileDto, ReadProfileDto, UpdateProfileDto } from './dto';
 
 @ApiTags('profiles')
 @Controller('profiles')
