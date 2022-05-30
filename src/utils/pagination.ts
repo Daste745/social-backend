@@ -16,8 +16,8 @@ export class PaginateOptions {
   @ApiProperty({
     required: false,
     type: Number,
-    minimum: 0,
-    default: 0,
+    minimum: 1,
+    default: 1,
   })
   @IsOptional()
   @IsInt()
@@ -28,7 +28,7 @@ export class PaginateOptions {
   @ApiProperty({
     required: false,
     type: Number,
-    minimum: 0,
+    minimum: 1,
     default: DEFAULT_PER_PAGE,
   })
   @IsOptional()
@@ -41,9 +41,9 @@ export class PaginateOptions {
 export function paginate<T>(data: T[], options: PaginateOptions): Paginated<T> {
   options = plainToInstance(PaginateOptions, options);
 
-  const page = options.page || 0;
+  const page = options.page || 1;
   const perPage = options.perPage || DEFAULT_PER_PAGE;
-  const offset = page * perPage;
+  const offset = (page - 1) * perPage;
 
   return {
     page,
