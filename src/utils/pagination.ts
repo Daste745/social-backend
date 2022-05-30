@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { plainToInstance, Type } from 'class-transformer';
 import { IsInt, IsOptional, IsPositive } from 'class-validator';
 
 const DEFAULT_PER_PAGE = 100;
@@ -13,8 +13,6 @@ export interface Paginated<T> {
 }
 
 export class PaginateOptions {
-  // TODO: Automatically cast parameters to int from request
-  //       For some reason the IsNumer and Type annotations don't do anything
   @ApiProperty({
     required: false,
     type: Number,
@@ -25,7 +23,7 @@ export class PaginateOptions {
   @IsInt()
   @IsPositive()
   @Type(() => Number)
-  page?: string;
+  page?: number;
 
   @ApiProperty({
     required: false,
@@ -37,12 +35,14 @@ export class PaginateOptions {
   @IsInt()
   @IsPositive()
   @Type(() => Number)
-  perPage?: string;
+  perPage?: number;
 }
 
 export function paginate<T>(data: T[], options: PaginateOptions): Paginated<T> {
-  const page = parseInt(options.page) || 0;
-  const perPage = parseInt(options.perPage) || DEFAULT_PER_PAGE;
+  options = plainToInstance(PaginateOptions, options);
+
+  const page = options.page || 0;
+  const perPage = options.perPage || DEFAULT_PER_PAGE;
   const offset = page * perPage;
 
   return {
