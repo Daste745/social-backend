@@ -33,8 +33,11 @@ export class PostsService {
       );
     }
 
+    const parentPost = await this.findOne(createPostDto.parent);
+
     return this.postsRepository.save({
       author: profile,
+      parent: parentPost,
       content: createPostDto.content,
     });
   }
@@ -42,7 +45,7 @@ export class PostsService {
   async findOne(id: string): Promise<Post> {
     try {
       return await this.postsRepository.findOneOrFail(id, {
-        relations: ['author'],
+        relations: ['author', 'parent'],
       });
     } catch (e) {
       if (e instanceof EntityNotFoundError) {

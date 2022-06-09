@@ -18,6 +18,9 @@ export class Post {
   @ManyToOne(() => Profile, (profile) => profile.posts, { eager: true })
   author: Profile;
 
+  @ManyToOne(() => Post, { nullable: true })
+  parent?: Post;
+
   @Column({ nullable: false, length: 1000 })
   content: string;
 

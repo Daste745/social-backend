@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Relation } from './relation.entity';
-import { Post } from 'src/posts/entities';
+import { Post } from '../../posts/entities';
 
 @Entity({ name: 'profile' })
 export class Profile {

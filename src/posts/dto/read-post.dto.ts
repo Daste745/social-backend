@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose, Type } from 'class-transformer';
 import { ReadProfileDto } from 'src/profiles/dto';
-import { Profile } from 'src/profiles/entities';
 
 @Exclude()
 export class ReadPostDto {
@@ -16,7 +15,12 @@ export class ReadPostDto {
   @ApiProperty()
   @Expose()
   @Type(() => ReadProfileDto)
-  author: Profile;
+  author: ReadProfileDto;
+
+  @ApiProperty()
+  @Expose()
+  @Type(() => ReadPostDto)
+  parent?: ReadPostDto;
 
   @ApiProperty()
   @Expose()
