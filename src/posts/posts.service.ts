@@ -66,19 +66,12 @@ export class PostsService {
 
   async update(
     user: User,
-    profileId: string,
     postId: string,
     updatePostDto: UpdatePostDto,
   ): Promise<Post> {
-    const profile = await this.profilesService.findOne(profileId);
-    if (!profile.belongsTo(user.id)) {
-      throw new UnauthorizedException(
-        'You can only modify posts on your profiles.',
-      );
-    }
-
     const post = await this.findOne(postId);
-    if (!post.belongsTo(profile.id)) {
+
+    if (!post.author.belongsTo(user.id)) {
       throw new UnauthorizedException('You can only modify your posts.');
     }
 
