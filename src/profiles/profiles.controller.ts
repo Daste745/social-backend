@@ -65,8 +65,6 @@ export class ProfilesController {
     return plainToInstance(ReadProfileDto, profile);
   }
 
-  // FIXME: Response types for paginated return types are wrong. Should be Paginated<ReadProfileDto>
-
   @Get('')
   @ApiPaginatedResponse(ReadProfileDto)
   async findAll(
