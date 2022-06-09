@@ -62,6 +62,11 @@ export class PostsService {
     return this.postsRepository.find({ where: { profile: profile } });
   }
 
+  async findReplies(id: string): Promise<Post[]> {
+    const post = await this.findOne(id);
+    return this.postsRepository.find({ where: { parent: post } });
+  }
+
   async exists(id: string): Promise<boolean> {
     const count = await this.postsRepository.count({ where: { id: id } });
     return count != 0;

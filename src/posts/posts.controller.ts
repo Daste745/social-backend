@@ -69,6 +69,17 @@ export class PostsController {
     return paginate(plainToInstance(ReadPostDto, posts), paginateOptions);
   }
 
+  @Get(':id/replies')
+  @ApiPaginatedResponse(ReadPostDto)
+  @ApiNotFoundResponse()
+  async findReplies(
+    @Param('id') id: string,
+    @Query() paginateOptions: PaginateOptions,
+  ): Promise<Paginated<ReadPostDto>> {
+    const replies = await this.postsService.findReplies(id);
+    return paginate(plainToInstance(ReadPostDto, replies), paginateOptions);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @ApiOkResponse({ type: ReadPostDto })
