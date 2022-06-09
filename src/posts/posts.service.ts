@@ -55,16 +55,22 @@ export class PostsService {
   }
 
   async findAll(): Promise<Post[]> {
-    return this.postsRepository.find();
+    return this.postsRepository.find({ relations: ['author', 'parent'] });
   }
 
   async findAllFromProfile(profile: Profile): Promise<Post[]> {
-    return this.postsRepository.find({ where: { profile: profile } });
+    return this.postsRepository.find({
+      where: { profile: profile },
+      relations: ['author', 'parent'],
+    });
   }
 
   async findReplies(id: string): Promise<Post[]> {
     const post = await this.findOne(id);
-    return this.postsRepository.find({ where: { parent: post } });
+    return this.postsRepository.find({
+      where: { parent: post },
+      relations: ['author', 'parent'],
+    });
   }
 
   async exists(id: string): Promise<boolean> {
