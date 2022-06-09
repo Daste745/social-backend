@@ -17,16 +17,24 @@ import { plainToInstance } from 'class-transformer';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
+  ApiExtraModels,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { AuthRequest } from 'src/auth/types';
-import { paginate, Paginated, PaginateOptions } from 'src/utils/pagination';
+import {
+  ApiPaginatedResponse,
+  paginate,
+  Paginated,
+  PaginatedDto,
+  PaginateOptions,
+} from 'src/utils/pagination';
 import { CreateProfileDto, ReadProfileDto, UpdateProfileDto } from './dto';
 
 @ApiTags('profiles')
+@ApiExtraModels(PaginatedDto)
 @Controller('profiles')
 export class ProfilesController {
   constructor(private readonly profilesService: ProfilesService) {}
@@ -60,7 +68,7 @@ export class ProfilesController {
   // FIXME: Response types for paginated return types are wrong. Should be Paginated<ReadProfileDto>
 
   @Get('')
-  @ApiOkResponse({ type: ReadProfileDto, isArray: true })
+  @ApiPaginatedResponse(ReadProfileDto)
   async findAll(
     @Query() paginateOptions: PaginateOptions,
   ): Promise<Paginated<ReadProfileDto>> {
