@@ -7,6 +7,7 @@ import dbConfiguration from './config/db.config';
 import jwtConfiguration from './config/jwt.config';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ProfilesModule } from './profiles/profiles.module';
+import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ProfilesModule } from './profiles/profiles.module';
     UsersModule,
     AuthModule,
     ProfilesModule,
+    PostsModule,
   ],
 })
 export class AppModule {
