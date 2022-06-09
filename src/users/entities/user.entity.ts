@@ -1,4 +1,4 @@
-import { Profile } from 'src/profiles/entities';
+import { Profile } from '../../profiles/entities';
 import {
   Column,
   Entity,
