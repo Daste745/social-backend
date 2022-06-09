@@ -15,9 +15,13 @@ export class Post {
   @CreateDateColumn()
   created_at: Date;
 
-  @ManyToOne(() => Profile, { eager: true })
+  @ManyToOne(() => Profile, (profile) => profile.posts, { eager: true })
   author: Profile;
 
   @Column({ nullable: false, length: 1000 })
   content: string;
+
+  public belongsTo(profileId: string): boolean {
+    return this.author.id === profileId;
+  }
 }

@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Relation } from './relation.entity';
+import { Post } from 'src/posts/entities';
 
 @Entity({ name: 'profile' })
 export class Profile {
@@ -30,6 +31,9 @@ export class Profile {
   @OneToMany(() => Relation, (relation) => relation.profile_2)
   @JoinColumn()
   followers?: Relation[];
+
+  @OneToMany(() => Post, (post) => post.author)
+  posts?: Post[];
 
   public belongsTo(userId: string): boolean {
     return this.user.id === userId;
