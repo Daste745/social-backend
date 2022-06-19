@@ -42,7 +42,6 @@ export class PostsController {
     @Body() createPostDto: CreatePostDto,
     @Body('profileId') profileId: string,
   ): Promise<ReadPostDto> {
-    console.log(req.user, createPostDto, profileId);
     const post = await this.postsService.create(
       createPostDto,
       req.user,
@@ -55,7 +54,6 @@ export class PostsController {
   @ApiOkResponse({ type: ReadPostDto })
   @ApiNotFoundResponse()
   async findOne(@Param('id') id: string): Promise<ReadPostDto> {
-    console.log(id);
     const post = await this.postsService.findOne(id);
     return plainToInstance(ReadPostDto, post);
   }
