@@ -26,7 +26,7 @@ import {
   PaginateOptions,
 } from 'src/utils/pagination';
 import { CreatePostDto, ReadPostDto, UpdatePostDto } from './dto';
-import { PostsService } from './posts.service';
+import { FindPostsOptions, PostsService } from './posts.service';
 
 @ApiTags('posts')
 @Controller('posts')
@@ -62,8 +62,9 @@ export class PostsController {
   @ApiPaginatedResponse(ReadPostDto)
   async findAll(
     @Query() paginateOptions: PaginateOptions,
+    @Query() findPostsOptions: FindPostsOptions,
   ): Promise<Paginated<ReadPostDto>> {
-    const posts = await this.postsService.findAll();
+    const posts = await this.postsService.findAll(findPostsOptions);
     return paginate(plainToInstance(ReadPostDto, posts), paginateOptions);
   }
 

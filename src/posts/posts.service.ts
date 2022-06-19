@@ -3,13 +3,25 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ApiProperty } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Exclude, Expose, plainToInstance, Type } from 'class-transformer';
+import { IsOptional, IsString } from 'class-validator';
 import { Profile } from 'src/profiles/entities';
 import { ProfilesService } from 'src/profiles/profiles.service';
 import { User } from 'src/users/entities';
 import { EntityNotFoundError, Repository } from 'typeorm';
 import { CreatePostDto, UpdatePostDto } from './dto';
 import { Post } from './entities';
+
+@Exclude()
+export class FindPostsOptions {
+  @ApiProperty({ required: false, type: String })
+  @Expose()
+  @IsOptional()
+  @IsString()
+  author: string;
+}
 
 @Injectable()
 export class PostsService {
@@ -54,8 +66,16 @@ export class PostsService {
     }
   }
 
-  async findAll(): Promise<Post[]> {
-    return this.postsRepository.find({ relations: ['author', 'parent'] });
+  async findAll(options?: FindPostsOptions): Promise<Post[]> {
+    let filters = undefined;
+    if (options.author) {
+      filters = plainToInstance(FindPostsOptions, options);
+    }
+
+    return this.postsRepository.find({
+      where: filters,
+      relations: ['author', 'parent'],
+    });
   }
 
   async findAllFromProfile(profile: Profile): Promise<Post[]> {
