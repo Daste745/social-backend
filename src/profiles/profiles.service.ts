@@ -86,8 +86,7 @@ export class ProfilesService {
     profileId: string,
     targetProfileId: string,
   ): Promise<Profile> {
-    let profile: Profile, targetProfile: Profile;
-    [profile, targetProfile] = await Promise.all([
+    const [profile, targetProfile] = await Promise.all([
       this.findOne(profileId),
       this.findOne(targetProfileId),
     ]);
