@@ -26,8 +26,8 @@ export class Post {
   @Column({ nullable: false, length: 1000 })
   content: string;
 
-  @OneToMany(() => Reaction, (reaction) => reaction.author, { eager: true })
-  reactions?: Reaction[];
+  @OneToMany(() => Reaction, (reaction) => reaction.post, { eager: true })
+  reactions: Reaction[];
 
   public belongsTo(profileId: string): boolean {
     return this.author.id === profileId;
