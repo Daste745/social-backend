@@ -12,8 +12,7 @@ import { ProfilesService } from 'src/profiles/profiles.service';
 import { User } from 'src/users/entities';
 import { EntityNotFoundError, Repository } from 'typeorm';
 import { CreatePostDto, UpdatePostDto } from './dto';
-import { Post } from './entities';
-import { Reaction } from './entities/reaction.entity';
+import { Post, Reaction } from './entities';
 
 @Exclude()
 export class FindPostsOptions {
