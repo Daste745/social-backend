@@ -25,7 +25,13 @@ import {
   Paginated,
   PaginateOptions,
 } from 'src/utils/pagination';
-import { CreatePostDto, ReadPostDto, UpdatePostDto } from './dto';
+import {
+  CreatePostDto,
+  CreateReactionDto,
+  ReadPostDto,
+  UpdatePostDto,
+} from './dto';
+import { ReadReactionDto } from './dto/read-reaction.dto';
 import { FindPostsOptions, PostsService } from './posts.service';
 
 @ApiTags('posts')
@@ -99,4 +105,24 @@ export class PostsController {
   }
 
   // TODO: DELETE /posts/:id (needs to cascade delete comments, reactions, etc.)
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/reactions')
+  @ApiCreatedResponse({ type: ReadReactionDto })
+  @ApiUnauthorizedResponse()
+  @ApiNotFoundResponse()
+  async createReaction(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Body() createReactionDto: CreateReactionDto,
+    @Body('profileId') profileId: string,
+  ): Promise<ReadReactionDto> {
+    const reaction = await this.postsService.createReaction(
+      createReactionDto,
+      req.user,
+      profileId,
+      id,
+    );
+    return plainToInstance(ReadReactionDto, reaction);
+  }
 }

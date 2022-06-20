@@ -11,7 +11,7 @@ import { Profile } from 'src/profiles/entities';
 import { ProfilesService } from 'src/profiles/profiles.service';
 import { User } from 'src/users/entities';
 import { EntityNotFoundError, Repository } from 'typeorm';
-import { CreatePostDto, UpdatePostDto } from './dto';
+import { CreatePostDto, CreateReactionDto, UpdatePostDto } from './dto';
 import { Post, Reaction } from './entities';
 
 @Exclude()
@@ -54,6 +54,29 @@ export class PostsService {
       author: profile,
       parent: parentPost,
       content: createPostDto.content,
+    });
+  }
+
+  async createReaction(
+    createReactionDto: CreateReactionDto,
+    user: User,
+    profileId: string,
+    postId: string,
+  ): Promise<Reaction> {
+    const profile = await this.profilesService.findOne(profileId);
+
+    if (!profile.belongsTo(user.id)) {
+      throw new UnauthorizedException(
+        'You can only create reactions as your profiles.',
+      );
+    }
+
+    const post = await this.findOne(postId);
+
+    return this.reactionsRepository.save({
+      author: profile,
+      post: post,
+      type: createReactionDto.type,
     });
   }
 
