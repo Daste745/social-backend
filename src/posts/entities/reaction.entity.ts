@@ -11,7 +11,7 @@ export class Reaction {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Profile, { nullable: false })
+  @ManyToOne(() => Profile, { nullable: false, eager: true })
   author: Profile;
 
   @ManyToOne(() => Post, (post) => post.reactions, { nullable: false })
