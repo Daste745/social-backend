@@ -4,8 +4,10 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Reaction } from './reaction.entity';
 
 @Entity({ name: 'post' })
 export class Post {
@@ -23,6 +25,9 @@ export class Post {
 
   @Column({ nullable: false, length: 1000 })
   content: string;
+
+  @OneToMany(() => Reaction, (reaction) => reaction.author, { eager: true })
+  reactions?: Reaction[];
 
   public belongsTo(profileId: string): boolean {
     return this.author.id === profileId;
