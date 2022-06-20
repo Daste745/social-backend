@@ -13,6 +13,7 @@ import { User } from 'src/users/entities';
 import { EntityNotFoundError, Repository } from 'typeorm';
 import { CreatePostDto, UpdatePostDto } from './dto';
 import { Post } from './entities';
+import { Reaction } from './entities/reaction.entity';
 
 @Exclude()
 export class FindPostsOptions {
@@ -28,6 +29,9 @@ export class PostsService {
   constructor(
     @InjectRepository(Post)
     private postsRepository: Repository<Post>,
+
+    @InjectRepository(Reaction)
+    private reactionsRepository: Repository<Reaction>,
 
     private profilesService: ProfilesService,
   ) {}
@@ -57,7 +61,7 @@ export class PostsService {
   async findOne(id: string): Promise<Post> {
     try {
       return await this.postsRepository.findOneOrFail(id, {
-        relations: ['author', 'parent'],
+        relations: ['author', 'parent', 'reactions'],
       });
     } catch (e) {
       if (e instanceof EntityNotFoundError) {
@@ -74,14 +78,14 @@ export class PostsService {
 
     return this.postsRepository.find({
       where: filters,
-      relations: ['author', 'parent'],
+      relations: ['author', 'parent', 'reactions'],
     });
   }
 
   async findAllFromProfile(profile: Profile): Promise<Post[]> {
     return this.postsRepository.find({
       where: { profile: profile },
-      relations: ['author', 'parent'],
+      relations: ['author', 'parent', 'reactions'],
     });
   }
 
@@ -89,7 +93,7 @@ export class PostsService {
     const post = await this.findOne(id);
     return this.postsRepository.find({
       where: { parent: post },
-      relations: ['author', 'parent'],
+      relations: ['author', 'parent', 'reactions'],
     });
   }
 
