@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -72,6 +73,15 @@ export class PostsService {
     }
 
     const post = await this.findOne(postId);
+
+    const reactionCount = await this.reactionsRepository.count({
+      where: { author: profile, post },
+    });
+    if (reactionCount) {
+      throw new BadRequestException(
+        'You can create only one response per post.',
+      );
+    }
 
     return this.reactionsRepository.save({
       author: profile,

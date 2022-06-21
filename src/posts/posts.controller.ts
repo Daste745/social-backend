@@ -10,6 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
+  ApiBadRequestResponse,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -111,6 +112,7 @@ export class PostsController {
   @ApiCreatedResponse({ type: ReadReactionDto })
   @ApiUnauthorizedResponse()
   @ApiNotFoundResponse()
+  @ApiBadRequestResponse()
   async createReaction(
     @Req() req: AuthRequest,
     @Param('id') id: string,
