@@ -1,7 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -12,6 +15,7 @@ import {
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
+  ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiTags,
@@ -126,5 +130,19 @@ export class PostsController {
       id,
     );
     return plainToInstance(ReadReactionDto, reaction);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/reactions')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiNoContentResponse()
+  @ApiUnauthorizedResponse()
+  @ApiNotFoundResponse()
+  async deleteReaction(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Body('profileId') profileId: string,
+  ): Promise<null> {
+    return this.postsService.deleteReaction(req.user, profileId, id);
   }
 }

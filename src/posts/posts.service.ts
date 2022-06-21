@@ -90,6 +90,26 @@ export class PostsService {
     });
   }
 
+  async deleteReaction(
+    user: User,
+    profileId: string,
+    postId: string,
+  ): Promise<null> {
+    const profile = await this.profilesService.findOne(profileId);
+
+    if (!profile.belongsTo(user.id)) {
+      throw new UnauthorizedException(
+        'You can only delete reactions as your profiles.',
+      );
+    }
+
+    const post = await this.findOne(postId);
+    const reaction = await this.findPostReaction(post.id, profile.id);
+
+    await this.reactionsRepository.delete(reaction);
+    return null;
+  }
+
   async findOne(id: string): Promise<Post> {
     try {
       return await this.postsRepository.findOneOrFail(id, {
@@ -112,6 +132,21 @@ export class PostsService {
       where: filters,
       relations: ['author', 'parent', 'reactions'],
     });
+  }
+
+  async findPostReaction(postId: string, profileId: string) {
+    const post = await this.findOne(postId);
+    const profile = this.profilesService.findOne(profileId);
+
+    try {
+      return await this.reactionsRepository.findOneOrFail({
+        where: { post, author: profile },
+      });
+    } catch (e) {
+      if (e instanceof EntityNotFoundError) {
+        throw new NotFoundException();
+      }
+    }
   }
 
   async findAllFromProfile(profile: Profile): Promise<Post[]> {
